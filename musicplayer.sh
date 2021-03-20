@@ -1,6 +1,6 @@
 #!/bin/bash
 
-STATEFILE="/home/pi/hellomercedes/state.txt"
+STATEFILE="/home/pi/state"
 
 fadeout(){
     count=65535
