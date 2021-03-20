@@ -1,4 +1,6 @@
-#!bin/sh
+#!/bin/sh
+
+STATEFILE="/home/kilian/hellomercedes/state.txt"
 
 fadeout(){
     for i in {1..15}
@@ -22,7 +24,7 @@ pidtokill=0
 #precondition: volume is up at working vol
 while true; do
 
-    if  grep -q "sportcar" "/home/kilian/hellomercedes/state.txt" && [ "$statevariable" != "sportcar" ]; then
+    if  grep -q "sportcar" $STATEFILE && [ "$statevariable" != "sportcar" ]; then
         fadeout
         kill -9 "$pidtokill"
         aplay ~/hellomercedes/file_example_WAV_1MG.wav &
@@ -31,7 +33,7 @@ while true; do
         fadein
     fi
 
-    if grep -q "familycar" "/home/kilian/hellomercedes/state.txt" && [ "$statevariable" != "familycar" ]; then
+    if grep -q "familycar" $STATEFILE && [ "$statevariable" != "familycar" ]; then
         fadeout
         kill -9 "$pidtokill"
         aplay ~/hellomercedes/organfinale.wav &
