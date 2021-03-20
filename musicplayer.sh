@@ -3,28 +3,39 @@
 STATEFILE="/home/kilian/hellomercedes/state.txt"
 
 fadeout(){
-    for i in {1..15}
+    count=65535
+    for i in {1..500}
     do
-        amixer -q sset Master 3%-
-        sleep .8
+        indexline=$(pacmd list-sink-inputs | egrep -B 21 "$pidtokill" | egrep "index")
+        length=${#indexline}
+        echo "$indexline"
+        let l=length-11
+        index=${indexline:11:$l}
+        echo "$index"
+        len=${#index}
+        echo "$len"
+        pacmd set-sink-input-volume "$index" "$count"
+        let count=count-40
+        sleep .02
     done
 }
 
 fadein(){
-    for i in {1..15}
+    for i in {1..90}
     do
         amixer -q sset Master 3%+
-        sleep .8
+        sleep .1
     done
 }
 amixer -q sset Master 100%
 Pathtofile="~/hellomercedes/state.txt"
 statevariable="base"
 pidtokill=0
+aplay ~/hellomercedes/file_example_WAV_1MG.wav &
 #precondition: volume is up at working vol
 while true; do
 
-    if  grep -q "sportcar" $STATEFILE && [ "$statevariable" != "sportcar" ]; then
+    if  grep -q "sportcar" $STATEFILE && ! [ "$statevariable" == "sportcar" ]; then
         fadeout
         kill -9 "$pidtokill"
         aplay ~/hellomercedes/file_example_WAV_1MG.wav &
@@ -33,7 +44,7 @@ while true; do
         fadein
     fi
 
-    if grep -q "familycar" $STATEFILE && [ "$statevariable" != "familycar" ]; then
+    if grep -q "familycar" $STATEFILE && ! [ "$statevariable" == "familycar" ]; then
         fadeout
         kill -9 "$pidtokill"
         aplay ~/hellomercedes/organfinale.wav &
