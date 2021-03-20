@@ -1,10 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 
-STATEFILE="/home/kilian/hellomercedes/state.txt"
+STATEFILE="/home/pi/hellomercedes/state.txt"
 
 fadeout(){
     count=65535
-    for i in {1..500}
+    for i in {1..50}
     do
         indexline=$(pacmd list-sink-inputs | egrep -B 21 "$pidtokill" | egrep "index")
         length=${#indexline}
@@ -15,8 +15,8 @@ fadeout(){
         len=${#index}
         echo "$len"
         pacmd set-sink-input-volume "$index" "$count"
-        let count=count-40
-        sleep .02
+        let count=count-1000
+        sleep .1
     done
 }
 
