@@ -20,10 +20,26 @@ fadeout(){
         let l=length-11
         index=${indexline:11:$l}
         pacmd set-sink-input-volume "$index" "$count"
-        let count=count-760
+        let count=count-700
         sleep .1
     done
 }
+
+fadeoutlittle(){
+    count=60000
+    for i in {1..40} 
+    do
+        indexline=$(pacmd list-sink-inputs | egrep -B 21 "$pidtokill" | egrep "index")
+        length=${#indexline}
+        let l=length-11
+        index=${indexline:11:$l}
+        pacmd set-sink-input-volume "$index" "$count"
+        let count=count-700
+        sleep .1
+    done
+}
+
+
 
 fadein(){
     
@@ -39,6 +55,20 @@ fadein(){
         sleep .1
     done
 }
+
+fadeinfast(){
+    count=1
+    for i in {1..4} 
+    do
+        indexline=$(pacmd list-sink-inputs | egrep -B 21 "$pidtokill" | egrep "index")
+        length=${#indexline}
+        let l=length-11
+        index=${indexline:11:$l}
+        pacmd set-sink-input-volume "$index" $count
+        let count=count+14500
+        sleep .02
+    done
+}
 amixer -q sset Master 50%
 
 statevariable="base"
@@ -49,15 +79,15 @@ while true; do
     if  grep -q "AMG" $STATEFILE && ! [ "$statevariable" == "AMG" ]; then
         fadeout
         kill -9 "$pidtokill"
+        statevariable="AMG"
         aplay ~/musicplayer/AMG_Musik_def.wav &
         pidtokill="$!"
-        statevariable="AMG"
-        indexline=$(pacmd list-sink-inputs | egrep -B 21 "$pidtokill" | egrep "index")
-        length=${#indexline}
-        let l=length-11
-        index=${indexline:11:$l}
-        echo "$index"
-        pacmd set-sink-input-volume "$index" "65500"
+        settozero
+        amixer -q sset Master 100%
+        fadeinfast
+        sleep 3.5
+        fadeoutlittle
+        
     fi
 
     if grep -q "EQC" $STATEFILE && ! [ "$statevariable" == "EQC" ]; then
