@@ -1,6 +1,6 @@
 #!/bin/bash
 
-STATEFILE="state.txt"
+STATEFILE="/home/pi/state"
 
 settozero(){
     indexline=$(pacmd list-sink-inputs | egrep -B 21 "$pidtokill" | egrep "index")
